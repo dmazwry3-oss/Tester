@@ -1,8 +1,8 @@
 {
-  "name": "scribd-downloader",
-  "version": "1.0.0",
+  "name": "dmaz-tester",
+  "version": "2.0.0",
   "private": true,
-  "description": "Scribd downloader web app deployable to Netlify.",
+  "description": "Dmaz Tester - Multi-mirror Scribd downloader. Bypasses Cloudflare/captcha gating by offering several downloader services per request.",
   "scripts": {
     "dev": "netlify dev",
     "build": "echo \"Static site - nothing to build.\"",
@@ -11,5 +11,6 @@
   "engines": {
     "node": ">=18"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "author": "dmsmaul05"
 }

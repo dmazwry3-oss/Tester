@@ -3,129 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Scribd Downloader Free - Download dokumen dari Scribd dengan mudah dan cepat. Cukup paste URL Scribd dan dapatkan link download.">
-    <meta name="theme-color" content="#1e293b">
-    <title>Scribd Downloader Free - Download Scribd Documents</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath fill='%23fff' d='M14 2v6h6'/%3E%3C/svg%3E">
+    <meta name="description" content="Dmaz Tester - Download dokumen Scribd lewat banyak mirror sekaligus. Lewati Cloudflare/captcha dengan satu klik.">
+    <meta name="theme-color" content="#0b1220">
+    <meta name="color-scheme" content="dark">
+    <title>Dmaz Tester — Scribd Downloader Multi-Mirror</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c3aed'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M10 11h6a5 5 0 0 1 0 10h-6V11zm3 3v4h3a2 2 0 0 0 0-4h-3z' fill='white'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="bg-orbs" aria-hidden="true">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+    </div>
+
     <header class="site-header">
         <div class="container header-inner">
             <a href="/" class="logo">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
-                    <path d="M8 12h8v2H8zm0 4h6v2H8z"/>
-                </svg>
-                <span>ScribdDL</span>
+                <span class="logo-mark" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" width="32" height="32">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#7c3aed"/>
+                                <stop offset="1" stop-color="#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="32" height="32" rx="9" fill="url(#logoGrad)"/>
+                        <path d="M10 10h6.4a6 6 0 0 1 0 12H10V10zm3.2 3v6h3.2a3 3 0 0 0 0-6h-3.2z" fill="white"/>
+                    </svg>
+                </span>
+                <span class="logo-text">
+                    <span class="logo-name">Dmaz <span class="logo-name-accent">Tester</span></span>
+                    <span class="logo-tag">Scribd Multi-Mirror Downloader</span>
+                </span>
             </a>
-            <nav class="nav">
+            <nav class="nav" aria-label="Primary">
                 <a href="#how">How it works</a>
                 <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
             </nav>
         </div>
     </header>
 
     <main>
         <section class="hero">
-            <div class="container">
-                <h1>Scribd Downloader <span class="accent">Free</span></h1>
-                <p class="lead">
-                    Paste URL Scribd, dan kami akan menyiapkan beberapa mirror sekaligus.
-                    Kalau salah satu kena Cloudflare atau captcha, tinggal coba mirror lain — tanpa input ulang.
+            <div class="container hero-inner">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    Live · 6 mirror aktif · Lewati Cloudflare
+                </div>
+                <h1 class="hero-title">
+                    Download Scribd <br class="hero-br">
+                    <span class="hero-gradient">Tanpa Drama</span>
+                </h1>
+                <p class="hero-lead">
+                    Paste URL Scribd-mu sekali. Kami siapkan beberapa mirror downloader
+                    sekaligus. Kalau satu kena Cloudflare atau captcha, tinggal pindah
+                    ke mirror lain — tanpa input ulang, tanpa ribet.
                 </p>
 
                 <form id="downloader-form" class="form" novalidate>
                     <div class="input-group">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        </span>
                         <input
                             type="url"
                             id="scribd-url"
                             name="url"
                             placeholder="https://www.scribd.com/document/123456/Example-Doc"
                             autocomplete="off"
+                            spellcheck="false"
                             required
                             aria-label="Scribd URL">
-                        <button type="submit" id="submit-btn">
-                            <span class="btn-text">Get Download Now</span>
+                        <button type="button" class="paste-btn" id="paste-btn" title="Paste dari clipboard" aria-label="Paste dari clipboard">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                        </button>
+                        <button type="submit" id="submit-btn" class="submit-btn">
+                            <span class="btn-text">Get Mirrors</span>
                             <span class="btn-loader" aria-hidden="true"></span>
+                            <svg class="btn-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </button>
                     </div>
-                    <p class="hint">Contoh: https://www.scribd.com/document/12345/Business-Plan-Template</p>
+                    <p class="hint">
+                        Format: <code>scribd.com/document/...</code>, <code>/doc/...</code>, atau <code>/presentation/...</code>.
+                        Subdomain locale (<code>id.scribd.com</code>, <code>de.scribd.com</code>, dst.) juga didukung.
+                    </p>
                 </form>
 
                 <div id="result" class="result" hidden></div>
+
+                <div id="recent" class="recent" hidden>
+                    <div class="recent-head">
+                        <h3>Riwayat terakhir</h3>
+                        <button type="button" id="recent-clear" class="link-btn">Bersihkan</button>
+                    </div>
+                    <ul id="recent-list" class="recent-list"></ul>
+                </div>
             </div>
         </section>
 
         <section id="how" class="section">
             <div class="container">
-                <h2>How it works</h2>
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-num">1</div>
-                        <h3>Paste URL</h3>
-                        <p>Salin URL dokumen dari Scribd dan tempel ke kolom di atas.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-num">2</div>
-                        <h3>Process</h3>
-                        <p>Sistem memvalidasi URL dan menyiapkan link dari beberapa mirror downloader sekaligus.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-num">3</div>
-                        <h3>Pilih Mirror</h3>
-                        <p>Klik mirror yang Recommended dulu. Kalau kena verifikasi atau captcha, lompat ke mirror berikutnya tanpa paste ulang.</p>
-                    </div>
+                <div class="section-head">
+                    <span class="eyebrow">Workflow</span>
+                    <h2>3 langkah, selesai</h2>
+                    <p class="section-sub">Tanpa registrasi, tanpa install. Murni di browser.</p>
                 </div>
-
-                <div class="callout">
-                    <strong>Catatan:</strong> URL yang didukung saat ini hanya dari domain Scribd dengan prefix:
-                    <code>scribd.com/document/</code>, <code>scribd.com/doc/</code>, atau
-                    <code>scribd.com/presentation/</code>.
+                <div class="grid steps">
+                    <div class="card step">
+                        <div class="step-num">01</div>
+                        <h3>Paste URL Scribd</h3>
+                        <p>Salin link dokumen dari Scribd dan tempel ke kolom di atas. Atau pakai tombol paste otomatis.</p>
+                    </div>
+                    <div class="card step">
+                        <div class="step-num">02</div>
+                        <h3>Kami siapkan mirror</h3>
+                        <p>Server memvalidasi URL, normalisasi subdomain locale, lalu generate 6 link mirror sekaligus.</p>
+                    </div>
+                    <div class="card step">
+                        <div class="step-num">03</div>
+                        <h3>Klik mirror tersehat</h3>
+                        <p>Mulai dari yang berlabel <strong>Recommended</strong>. Kena captcha? Lompat ke mirror berikutnya.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="faq" class="section section-alt">
+        <section class="section section-alt">
             <div class="container">
-                <h2>Frequently Asked Questions</h2>
-                <details class="faq-item">
+                <div class="section-head">
+                    <span class="eyebrow">Why multi-mirror</span>
+                    <h2>Kenapa pakai banyak mirror?</h2>
+                </div>
+                <div class="grid features">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h3>Anti-Cloudflare ring</h3>
+                        <p>Kalau satu mirror sedang ditembok Cloudflare challenge, mirror lain biasanya masih lewat.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </div>
+                        <h3>One-click switch</h3>
+                        <p>Tombol mirror ada di tab baru semua. Tinggal close tab yang gagal, klik mirror berikutnya.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <h3>Tanpa antri</h3>
+                        <p>URL di-build instan dari pola yang sudah dikenal. Nggak perlu queue server, nggak perlu nunggu.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        </div>
+                        <h3>Support langsung</h3>
+                        <p>Stuck atau request fitur? DM Instagram atau chat WhatsApp langsung — admin ramah, no bot.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section">
+            <div class="container container-narrow">
+                <div class="section-head">
+                    <span class="eyebrow">FAQ</span>
+                    <h2>Pertanyaan yang sering ditanya</h2>
+                </div>
+                <details class="faq-item" open>
                     <summary>Apakah layanan ini gratis?</summary>
-                    <p>Ya, semua fitur tersedia gratis. Anda bisa menggunakan tanpa registrasi.</p>
+                    <p>Ya, 100% gratis. Tanpa registrasi, tanpa watermark, tanpa batasan kuota dari sisi kami.</p>
                 </details>
                 <details class="faq-item">
                     <summary>Kenapa ada banyak tombol mirror?</summary>
-                    <p>Setiap mirror adalah layanan downloader pihak ketiga yang berbeda (VPDFS, DLScrib, DocDownloader, dll). Kalau salah satu sedang minta verifikasi Cloudflare atau captcha, mirror lain biasanya masih bisa dipakai tanpa hambatan. Kami menyiapkan semuanya sekaligus jadi Anda nggak perlu paste URL berkali-kali.</p>
+                    <p>Setiap mirror adalah layanan downloader pihak ketiga yang berbeda (VPDFS, DLScrib, DocDownloader, dll). Kalau salah satu sedang minta verifikasi Cloudflare atau captcha, mirror lain biasanya masih bisa dipakai. Kami menyiapkan semuanya sekaligus jadi kamu nggak perlu paste URL berkali-kali.</p>
                 </details>
                 <details class="faq-item">
                     <summary>Mirror mana yang paling bagus?</summary>
-                    <p>Coba yang berlabel <strong>Recommended</strong> dulu (paling atas). Kalau kena captcha berat, lanjut ke yang berikutnya. Tidak ada satu mirror yang selalu menang — kondisinya berubah hari ke hari tergantung load &amp; proteksi anti-bot masing-masing layanan.</p>
+                    <p>Coba yang berlabel <strong>Recommended</strong> dulu. Kalau kena captcha berat, lanjut ke yang berikutnya. Tidak ada satu mirror yang selalu menang — kondisinya berubah hari ke hari tergantung load &amp; proteksi anti-bot masing-masing layanan.</p>
                 </details>
                 <details class="faq-item">
                     <summary>Format file apa yang didukung?</summary>
-                    <p>Sebagian besar dokumen Scribd dapat diunduh dalam format PDF. Beberapa dokumen mungkin tersedia dalam format aslinya seperti DOC, PPT, atau TXT.</p>
+                    <p>Sebagian besar dokumen Scribd dapat diunduh dalam format PDF. Beberapa dokumen mungkin tersedia dalam format aslinya seperti DOC, PPT, atau TXT — tergantung mirror yang kamu pilih.</p>
                 </details>
                 <details class="faq-item">
-                    <summary>Kenapa URL saya tidak diterima?</summary>
-                    <p>Pastikan URL berasal dari domain <code>scribd.com</code> dan diawali dengan path <code>/document/</code>, <code>/doc/</code>, atau <code>/presentation/</code>.</p>
+                    <summary>URL dari id.scribd.com bisa?</summary>
+                    <p>Bisa. Subdomain locale seperti <code>id.scribd.com</code>, <code>de.scribd.com</code>, <code>fr.scribd.com</code>, dst. otomatis dinormalisasi ke domain utama Scribd sebelum di-generate ke mirror.</p>
                 </details>
                 <details class="faq-item">
-                    <summary>Apakah ada batasan jumlah download?</summary>
-                    <p>Tidak ada batasan keras dari sisi kami. Tapi setiap mirror punya rate-limit-nya sendiri — kalau mentok di satu mirror, pindah ke mirror lain.</p>
+                    <summary>Apakah datanya disimpan?</summary>
+                    <p>Server hanya memvalidasi URL — tidak menyimpan riwayat. Riwayat di halaman ini cuma ada di browser kamu sendiri (localStorage), nggak dikirim kemanapun.</p>
                 </details>
+            </div>
+        </section>
+
+        <section id="contact" class="section section-alt">
+            <div class="container container-narrow">
+                <div class="section-head">
+                    <span class="eyebrow">Get in touch</span>
+                    <h2>Hubungi admin</h2>
+                    <p class="section-sub">Ada bug, request fitur, atau kerja sama? Kontak langsung di bawah.</p>
+                </div>
+                <div class="contact-grid">
+                    <a href="https://wa.me/6289603659756?text=Halo%20admin%20Dmaz%20Tester," class="contact-card contact-wa" target="_blank" rel="noopener noreferrer">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0 0 20.464 3.488"/></svg>
+                        </div>
+                        <div class="contact-body">
+                            <span class="contact-label">WhatsApp</span>
+                            <span class="contact-value">+62 896-0365-9756</span>
+                            <span class="contact-cta">Klik untuk chat <span aria-hidden="true">→</span></span>
+                        </div>
+                    </a>
+                    <a href="https://instagram.com/dmsmaul05" class="contact-card contact-ig" target="_blank" rel="noopener noreferrer">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                        </div>
+                        <div class="contact-body">
+                            <span class="contact-label">Instagram</span>
+                            <span class="contact-value">@dmsmaul05</span>
+                            <span class="contact-cta">Klik untuk follow <span aria-hidden="true">→</span></span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
-        <div class="container">
-            <p>&copy; <span id="year"></span> ScribdDL — Open source, deploy-ready for Netlify.</p>
-            <p class="small">
-                Tool ini hanya menyediakan akses ke dokumen yang dapat diakses publik. Patuhi hak cipta
-                pemilik konten dan Terms of Service Scribd.
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="logo-mark small" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" width="24" height="24"><rect width="32" height="32" rx="9" fill="url(#logoGrad)"/><path d="M10 10h6.4a6 6 0 0 1 0 12H10V10zm3.2 3v6h3.2a3 3 0 0 0 0-6h-3.2z" fill="white"/></svg>
+                </span>
+                <div>
+                    <strong>Dmaz Tester</strong>
+                    <p class="small">&copy; <span id="year"></span> · Made with care · Tanpa watermark, tanpa drama.</p>
+                </div>
+            </div>
+            <p class="small disclaimer">
+                Tool ini hanya menyediakan akses ke dokumen yang dapat diakses publik di Scribd.
+                Patuhi hak cipta pemilik konten dan Terms of Service Scribd.
             </p>
         </div>
     </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
     <script src="script.js"></script>
 </body>
