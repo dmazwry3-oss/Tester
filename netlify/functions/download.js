@@ -11,7 +11,9 @@
 
 'use strict';
 
-const SCRIBD_HOST_RE = /^(www\.)?scribd\.com$/i;
+// Accept scribd.com plus any single-label subdomain (locale prefixes such as
+// id., de., fr., ro., es., pt., etc. all serve the same content).
+const SCRIBD_HOST_RE = /^([a-z0-9-]+\.)?scribd\.com$/i;
 const SCRIBD_PATH_RE = /^\/(document|doc|presentation)\/(\d+)(?:\/([^/?#]+))?/i;
 
 function jsonResponse(statusCode, body) {
