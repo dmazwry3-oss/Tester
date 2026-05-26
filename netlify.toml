@@ -1,0 +1,31 @@
+# Netlify deployment configuration
+# Docs: https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  publish    = "."
+  functions  = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Pretty URL for the function so the frontend can call /api/download
+[[redirects]]
+  from   = "/api/download"
+  to     = "/.netlify/functions/download"
+  status = 200
+  force  = true
+
+# SPA-style fallback (so unknown paths still serve index.html)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# Sensible security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Permissions-Policy     = "geolocation=(), microphone=(), camera=()"

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Scribd Downloader Free - Download dokumen dari Scribd dengan mudah dan cepat. Cukup paste URL Scribd dan dapatkan link download.">
+    <meta name="theme-color" content="#1e293b">
+    <title>Scribd Downloader Free - Download Scribd Documents</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath fill='%23fff' d='M14 2v6h6'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                    <path d="M8 12h8v2H8zm0 4h6v2H8z"/>
+                </svg>
+                <span>ScribdDL</span>
+            </a>
+            <nav class="nav">
+                <a href="#how">How it works</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Scribd Downloader <span class="accent">Free</span></h1>
+                <p class="lead">
+                    Download dokumen Scribd dengan cepat dan tanpa ribet. Cukup paste URL,
+                    klik tombol, dan dapatkan link download dalam hitungan detik.
+                </p>
+
+                <form id="downloader-form" class="form" novalidate>
+                    <div class="input-group">
+                        <input
+                            type="url"
+                            id="scribd-url"
+                            name="url"
+                            placeholder="https://www.scribd.com/document/123456/Example-Doc"
+                            autocomplete="off"
+                            required
+                            aria-label="Scribd URL">
+                        <button type="submit" id="submit-btn">
+                            <span class="btn-text">Get Download Now</span>
+                            <span class="btn-loader" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <p class="hint">Contoh: https://www.scribd.com/document/12345/Business-Plan-Template</p>
+                </form>
+
+                <div id="result" class="result" hidden></div>
+            </div>
+        </section>
+
+        <section id="how" class="section">
+            <div class="container">
+                <h2>How it works</h2>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-num">1</div>
+                        <h3>Paste URL</h3>
+                        <p>Salin URL dokumen dari Scribd dan tempel ke kolom di atas.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-num">2</div>
+                        <h3>Process</h3>
+                        <p>Sistem akan memvalidasi URL dan menyiapkan link unduh untuk dokumen.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-num">3</div>
+                        <h3>Download</h3>
+                        <p>Klik tombol download untuk membuka viewer dan menyimpan dokumen.</p>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <strong>Catatan:</strong> URL yang didukung saat ini hanya dari domain Scribd dengan prefix:
+                    <code>scribd.com/document/</code>, <code>scribd.com/doc/</code>, atau
+                    <code>scribd.com/presentation/</code>.
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section section-alt">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <details class="faq-item">
+                    <summary>Apakah layanan ini gratis?</summary>
+                    <p>Ya, semua fitur tersedia gratis. Anda bisa menggunakan tanpa registrasi.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Format file apa yang didukung?</summary>
+                    <p>Sebagian besar dokumen Scribd dapat diunduh dalam format PDF. Beberapa dokumen mungkin tersedia dalam format aslinya seperti DOC, PPT, atau TXT.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Kenapa URL saya tidak diterima?</summary>
+                    <p>Pastikan URL berasal dari domain <code>scribd.com</code> dan diawali dengan path <code>/document/</code>, <code>/doc/</code>, atau <code>/presentation/</code>.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Apakah ada batasan jumlah download?</summary>
+                    <p>Tidak ada batasan keras, namun mohon gunakan dengan bijak. Jika Anda mengalami throttling, coba lagi beberapa menit kemudian.</p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; <span id="year"></span> ScribdDL — Open source, deploy-ready for Netlify.</p>
+            <p class="small">
+                Tool ini hanya menyediakan akses ke dokumen yang dapat diakses publik. Patuhi hak cipta
+                pemilik konten dan Terms of Service Scribd.
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
