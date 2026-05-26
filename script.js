@@ -24,7 +24,57 @@
         }
     }
 
-    function showResult({ status, title, message, downloadUrl, sourceUrl }) {
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    function downloadIconSvg() {
+        return `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        `;
+    }
+
+    function renderMirrorList(mirrors) {
+        if (!Array.isArray(mirrors) || mirrors.length === 0) return '';
+
+        const items = mirrors.map((m, idx) => {
+            const isPrimary = m.recommended || idx === 0;
+            const badge = isPrimary
+                ? '<span class="mirror-badge">Recommended</span>'
+                : '';
+            return `
+                <li class="mirror-item${isPrimary ? ' is-primary' : ''}">
+                    <a class="mirror-btn" href="${escapeAttr(m.url)}" target="_blank" rel="noopener noreferrer">
+                        <span class="mirror-main">
+                            <span class="mirror-name">${escapeHtml(m.name)}${badge}</span>
+                            ${m.note ? `<span class="mirror-note">${escapeHtml(m.note)}</span>` : ''}
+                        </span>
+                        <span class="mirror-icon">${downloadIconSvg()}</span>
+                    </a>
+                </li>
+            `;
+        }).join('');
+
+        return `<ul class="mirror-list">${items}</ul>`;
+    }
+
+    function renderLegacyButton(downloadUrl) {
+        return `
+            <a href="${escapeAttr(downloadUrl)}" target="_blank" rel="noopener noreferrer" class="download-btn">
+                ${downloadIconSvg()}
+                Open Download Page
+            </a>
+        `;
+    }
+
+    function showResult({ status, title, message, mirrors, downloadUrl, sourceUrl }) {
         result.hidden = false;
         result.classList.remove('is-error', 'is-success');
         if (status === 'error') result.classList.add('is-error');
@@ -34,28 +84,16 @@
         if (title) html += `<h3>${escapeHtml(title)}</h3>`;
         if (message) html += `<p>${escapeHtml(message)}</p>`;
         if (sourceUrl) html += `<div class="url-preview">${escapeHtml(sourceUrl)}</div>`;
-        if (downloadUrl) {
-            html += `
-                <a href="${escapeAttr(downloadUrl)}" target="_blank" rel="noopener noreferrer" class="download-btn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Open Download Page
-                </a>
-            `;
+
+        if (Array.isArray(mirrors) && mirrors.length > 0) {
+            html += renderMirrorList(mirrors);
+        } else if (downloadUrl) {
+            html += renderLegacyButton(downloadUrl);
         }
+
         result.innerHTML = html;
         result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-
-    function escapeHtml(s) {
-        return String(s).replace(/[&<>"']/g, (c) => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[c]));
-    }
-    function escapeAttr(s) { return escapeHtml(s); }
 
     function setLoading(loading) {
         submitBtn.disabled = loading;
@@ -108,7 +146,8 @@
             showResult({
                 status: 'success',
                 title: data.title || 'Siap untuk diunduh!',
-                message: data.message || 'Klik tombol di bawah untuk membuka halaman download.',
+                message: data.message || 'Klik salah satu mirror di bawah untuk membuka halaman download.',
+                mirrors: data.mirrors,
                 downloadUrl: data.downloadUrl,
                 sourceUrl: data.sourceUrl || value
             });

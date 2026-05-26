@@ -217,6 +217,96 @@ button.is-loading .btn-loader { display: inline-block; }
 }
 .download-btn:hover { background: #15803d; text-decoration: none; transform: translateY(-1px); }
 
+/* ===== Mirror list ===== */
+.mirror-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.625rem;
+}
+
+.mirror-item { margin: 0; }
+
+.mirror-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s, background 0.15s;
+}
+.mirror-btn:hover {
+    border-color: var(--primary);
+    background: #f1f5fd;
+    transform: translateY(-1px);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+}
+
+.mirror-item.is-primary .mirror-btn {
+    border-color: var(--success);
+    background: linear-gradient(0deg, rgba(22, 163, 74, 0.04), rgba(22, 163, 74, 0.04)), var(--surface);
+}
+.mirror-item.is-primary .mirror-btn:hover {
+    border-color: #15803d;
+    background: rgba(22, 163, 74, 0.08);
+}
+
+.mirror-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+.mirror-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.mirror-badge {
+    background: var(--success);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+}
+
+.mirror-note {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.mirror-icon {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--primary);
+    transition: background 0.15s, color 0.15s;
+}
+.mirror-btn:hover .mirror-icon { background: var(--primary); color: white; }
+.mirror-item.is-primary .mirror-icon { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+.mirror-item.is-primary .mirror-btn:hover .mirror-icon { background: var(--success); color: white; }
+
 /* ===== Sections ===== */
 .section { padding: 4rem 0; }
 .section-alt { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -325,4 +415,8 @@ button.is-loading .btn-loader { display: inline-block; }
     }
     .nav { display: none; }
     .hero { padding: 3rem 0 4rem; }
+    .mirror-btn { padding: 0.75rem 0.875rem; gap: 0.75rem; }
+    .mirror-icon { width: 32px; height: 32px; }
+    .mirror-name { font-size: 0.95rem; }
+    .mirror-note { font-size: 0.8rem; }
 }
