@@ -156,6 +156,20 @@
             body += renderLegacyButton(downloadUrl);
         }
 
+        // After a successful Scribd lookup, surface a small CTA pointing to the
+        // PDF Translate tab. Skipped on errors to avoid clutter.
+        if (status === 'success' && Array.isArray(mirrors) && mirrors.length > 0) {
+            body += `
+                <div class="translate-suggest">
+                    <p>Habis download? Lanjut translate PDF langsung di tab berikutnya.</p>
+                    <button type="button" id="goto-translate">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        Translate PDF
+                    </button>
+                </div>
+            `;
+        }
+
         result.innerHTML = headHtml + body;
         result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
@@ -203,6 +217,19 @@
                         }
                     }, i * 120);
                 });
+            });
+        }
+
+        // Cross-feature: jump to translate tab
+        const gotoTranslateBtn = result.querySelector('#goto-translate');
+        if (gotoTranslateBtn) {
+            gotoTranslateBtn.addEventListener('click', () => {
+                if (typeof window.__dmazSwitchToTranslate === 'function') {
+                    window.__dmazSwitchToTranslate();
+                    // Smooth scroll to top of hero so the translate panel is visible
+                    const hero = document.querySelector('.hero');
+                    if (hero) hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         }
     }
@@ -379,6 +406,329 @@
     }
 
     form.addEventListener('submit', handleSubmit);
+
+    // ============================================================
+    // PDF Translate feature
+    // ============================================================
+    const tabDownload  = document.getElementById('tab-download');
+    const tabTranslate = document.getElementById('tab-translate');
+    const panelDownload  = document.getElementById('panel-download');
+    const panelTranslate = document.getElementById('panel-translate');
+    const langFrom  = document.getElementById('lang-from');
+    const langTo    = document.getElementById('lang-to');
+    const langSwap  = document.getElementById('lang-swap');
+    const translatorList   = document.getElementById('translator-list');
+    const translatorOpenAll = document.getElementById('translator-open-all');
+    const translatorCount   = document.getElementById('translator-count');
+
+    /**
+     * Languages supported. Codes follow Google Translate conventions
+     * (which other services mostly accept too). Names are in Indonesian.
+     */
+    const LANGUAGES = [
+        { code: 'auto',  name: 'Deteksi otomatis', sourceOnly: true },
+        { code: 'af',    name: 'Afrikaans' },
+        { code: 'sq',    name: 'Albania' },
+        { code: 'am',    name: 'Amharik' },
+        { code: 'ar',    name: 'Arab' },
+        { code: 'hy',    name: 'Armenia' },
+        { code: 'az',    name: 'Azerbaijan' },
+        { code: 'eu',    name: 'Bask' },
+        { code: 'be',    name: 'Belarussia' },
+        { code: 'nl',    name: 'Belanda' },
+        { code: 'bn',    name: 'Bengali' },
+        { code: 'bs',    name: 'Bosnia' },
+        { code: 'bg',    name: 'Bulgaria' },
+        { code: 'my',    name: 'Burma (Myanmar)' },
+        { code: 'ca',    name: 'Katalan' },
+        { code: 'ceb',   name: 'Sebuano' },
+        { code: 'zh-CN', name: 'China (Sederhana)' },
+        { code: 'zh-TW', name: 'China (Tradisional)' },
+        { code: 'cs',    name: 'Ceko' },
+        { code: 'da',    name: 'Denmark' },
+        { code: 'en',    name: 'Inggris' },
+        { code: 'eo',    name: 'Esperanto' },
+        { code: 'et',    name: 'Estonia' },
+        { code: 'tl',    name: 'Tagalog (Filipina)' },
+        { code: 'fi',    name: 'Finlandia' },
+        { code: 'fr',    name: 'Prancis' },
+        { code: 'gl',    name: 'Galisia' },
+        { code: 'ka',    name: 'Georgia' },
+        { code: 'de',    name: 'Jerman' },
+        { code: 'el',    name: 'Yunani' },
+        { code: 'gu',    name: 'Gujarati' },
+        { code: 'ht',    name: 'Kreol Haiti' },
+        { code: 'haw',   name: 'Hawaii' },
+        { code: 'iw',    name: 'Ibrani' },
+        { code: 'hi',    name: 'Hindi' },
+        { code: 'hu',    name: 'Hungaria' },
+        { code: 'is',    name: 'Islandia' },
+        { code: 'id',    name: 'Indonesia' },
+        { code: 'ga',    name: 'Irlandia' },
+        { code: 'it',    name: 'Italia' },
+        { code: 'ja',    name: 'Jepang' },
+        { code: 'jw',    name: 'Jawa' },
+        { code: 'kn',    name: 'Kannada' },
+        { code: 'kk',    name: 'Kazakh' },
+        { code: 'km',    name: 'Khmer' },
+        { code: 'ko',    name: 'Korea' },
+        { code: 'la',    name: 'Latin' },
+        { code: 'lv',    name: 'Latvia' },
+        { code: 'lt',    name: 'Lituania' },
+        { code: 'mk',    name: 'Makedonia' },
+        { code: 'ms',    name: 'Melayu' },
+        { code: 'ml',    name: 'Malayalam' },
+        { code: 'mt',    name: 'Malta' },
+        { code: 'mi',    name: 'Maori' },
+        { code: 'mr',    name: 'Marathi' },
+        { code: 'mn',    name: 'Mongolia' },
+        { code: 'ne',    name: 'Nepal' },
+        { code: 'no',    name: 'Norwegia' },
+        { code: 'fa',    name: 'Persia' },
+        { code: 'pl',    name: 'Polandia' },
+        { code: 'pt',    name: 'Portugis' },
+        { code: 'pa',    name: 'Punjabi' },
+        { code: 'ro',    name: 'Rumania' },
+        { code: 'ru',    name: 'Rusia' },
+        { code: 'sr',    name: 'Serbia' },
+        { code: 'sk',    name: 'Slovakia' },
+        { code: 'sl',    name: 'Slovenia' },
+        { code: 'so',    name: 'Somali' },
+        { code: 'es',    name: 'Spanyol' },
+        { code: 'su',    name: 'Sunda' },
+        { code: 'sw',    name: 'Swahili' },
+        { code: 'sv',    name: 'Swedia' },
+        { code: 'ta',    name: 'Tamil' },
+        { code: 'te',    name: 'Telugu' },
+        { code: 'th',    name: 'Thai' },
+        { code: 'tr',    name: 'Turki' },
+        { code: 'uk',    name: 'Ukraina' },
+        { code: 'ur',    name: 'Urdu' },
+        { code: 'uz',    name: 'Uzbek' },
+        { code: 'vi',    name: 'Vietnam' },
+        { code: 'cy',    name: 'Wales' },
+        { code: 'yi',    name: 'Yiddi' },
+        { code: 'yo',    name: 'Yoruba' },
+        { code: 'zu',    name: 'Zulu' }
+    ];
+
+    /**
+     * Translator services. Each entry can build its own URL from the
+     * selected language pair. Services that don't support pre-fill via
+     * URL params just open their homepage / file form.
+     */
+    const TRANSLATORS = [
+        {
+            id: 'google',
+            name: 'Google Translate (Dokumen)',
+            note: 'Drag & drop PDF, DOCX, PPTX, atau XLSX hingga 10 MB. Cepat, 100+ bahasa, gratis.',
+            iconClass: 't-icon-google',
+            recommended: true,
+            buildUrl: ({ from, to }) =>
+                `https://translate.google.com/?sl=${encodeURIComponent(from || 'auto')}&tl=${encodeURIComponent(to || 'id')}&op=docs`
+        },
+        {
+            id: 'onlinedoc',
+            name: 'OnlineDocTranslator',
+            note: 'Berbasis Google Translate dengan fokus mempertahankan format. Mendukung PDF, DOCX, ODT, dll.',
+            iconClass: 't-icon-onlinedoc',
+            buildUrl: () => 'https://www.onlinedoctranslator.com/en/translationform'
+        },
+        {
+            id: 'deepl',
+            name: 'DeepL Document',
+            note: 'Kualitas terjemahan terbaik untuk bahasa Eropa. Free tier: 5 MB/file, 3 dokumen/bulan.',
+            iconClass: 't-icon-deepl',
+            buildUrl: ({ to }) => {
+                // DeepL uses a path-based locale on the homepage; fall back to /files for the upload screen.
+                const deeplTarget = ({ id: 'id', en: 'en-us', de: 'de', ja: 'ja', ko: 'ko', zh: 'zh', es: 'es', fr: 'fr', pt: 'pt-br', ru: 'ru', it: 'it', nl: 'nl' })[to] || '';
+                return deeplTarget
+                    ? `https://www.deepl.com/${deeplTarget}/translator/files`
+                    : 'https://www.deepl.com/translator/files';
+            }
+        },
+        {
+            id: 'doctrans',
+            name: 'DocTranslator.com',
+            note: 'Mendukung file lebih besar. Cocok untuk dokumen panjang seperti tesis & laporan.',
+            iconClass: 't-icon-doctrans',
+            buildUrl: () => 'https://doctranslator.com/'
+        },
+        {
+            id: 'pdf24',
+            name: 'PDF24 Translate',
+            note: 'Khusus PDF. Tidak butuh signup. Maks 100 MB. Bahasa terbatas tapi solid.',
+            iconClass: 't-icon-pdf24',
+            buildUrl: () => 'https://tools.pdf24.org/en/translate-pdf'
+        },
+        {
+            id: 'ilovepdf',
+            name: 'iLovePDF Translate',
+            note: 'UI bersih, khusus PDF, mempertahankan layout. Gratis dengan limit harian.',
+            iconClass: 't-icon-ilovepdf',
+            buildUrl: () => 'https://www.ilovepdf.com/translate-pdf'
+        }
+    ];
+
+    const TRANSLATE_PREFS_KEY = 'dmaz-tester:translate-prefs';
+
+    function loadTranslatePrefs() {
+        try {
+            const raw = localStorage.getItem(TRANSLATE_PREFS_KEY);
+            if (!raw) return null;
+            return JSON.parse(raw);
+        } catch { return null; }
+    }
+    function saveTranslatePrefs(prefs) {
+        try { localStorage.setItem(TRANSLATE_PREFS_KEY, JSON.stringify(prefs)); } catch {}
+    }
+
+    function populateLangSelect(select, includeAuto) {
+        const frag = document.createDocumentFragment();
+        LANGUAGES.forEach((lang) => {
+            if (lang.sourceOnly && !includeAuto) return;
+            const opt = document.createElement('option');
+            opt.value = lang.code;
+            opt.textContent = lang.name;
+            frag.appendChild(opt);
+        });
+        select.appendChild(frag);
+    }
+
+    function getCurrentLangPair() {
+        return {
+            from: langFrom ? langFrom.value : 'auto',
+            to:   langTo   ? langTo.value   : 'id'
+        };
+    }
+
+    function renderTranslators() {
+        if (!translatorList) return;
+        const langs = getCurrentLangPair();
+
+        translatorList.innerHTML = TRANSLATORS.map((t, idx) => {
+            const isPrimary = t.recommended || idx === 0;
+            const url = t.buildUrl(langs);
+            const badge = isPrimary
+                ? '<span class="mirror-badge">Recommended</span>'
+                : '';
+            return `
+                <li class="mirror-item${isPrimary ? ' is-primary' : ''}">
+                    <div class="mirror-card">
+                        <a class="mirror-link" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer" data-translator-id="${escapeAttr(t.id)}">
+                            <span class="mirror-icon ${t.iconClass}">${ICONS.external}</span>
+                            <span class="mirror-main">
+                                <span class="mirror-name">${escapeHtml(t.name)}${badge}</span>
+                                <span class="mirror-note">${escapeHtml(t.note)}</span>
+                            </span>
+                        </a>
+                        <button type="button" class="copy-btn" data-copy="${escapeAttr(url)}" title="Salin link" aria-label="Salin link ${escapeAttr(t.name)}">
+                            ${ICONS.copy}
+                        </button>
+                    </div>
+                </li>
+            `;
+        }).join('');
+
+        if (translatorCount) {
+            translatorCount.textContent = `${TRANSLATORS.length} translator tersedia`;
+        }
+
+        translatorList.querySelectorAll('.copy-btn').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const url = btn.getAttribute('data-copy');
+                try {
+                    await navigator.clipboard.writeText(url);
+                    btn.classList.add('is-copied');
+                    btn.innerHTML = ICONS.check;
+                    toast('Link tersalin ke clipboard', 'success');
+                    setTimeout(() => {
+                        btn.classList.remove('is-copied');
+                        btn.innerHTML = ICONS.copy;
+                    }, 1600);
+                } catch {
+                    toast('Browser memblokir clipboard. Salin manual.', 'error');
+                }
+            });
+        });
+    }
+
+    function switchTab(target) {
+        const isTranslate = target === 'translate';
+        if (tabDownload && tabTranslate) {
+            tabDownload.classList.toggle('is-active', !isTranslate);
+            tabDownload.setAttribute('aria-selected', String(!isTranslate));
+            tabTranslate.classList.toggle('is-active', isTranslate);
+            tabTranslate.setAttribute('aria-selected', String(isTranslate));
+        }
+        if (panelDownload && panelTranslate) {
+            panelDownload.hidden = isTranslate;
+            panelDownload.classList.toggle('is-active', !isTranslate);
+            panelTranslate.hidden = !isTranslate;
+            panelTranslate.classList.toggle('is-active', isTranslate);
+        }
+    }
+
+    if (langFrom && langTo) {
+        populateLangSelect(langFrom, true);
+        populateLangSelect(langTo, false);
+
+        const prefs = loadTranslatePrefs() || { from: 'auto', to: 'id' };
+        langFrom.value = LANGUAGES.some((l) => l.code === prefs.from) ? prefs.from : 'auto';
+        langTo.value   = LANGUAGES.some((l) => l.code === prefs.to && !l.sourceOnly) ? prefs.to : 'id';
+
+        const onLangChange = () => {
+            saveTranslatePrefs({ from: langFrom.value, to: langTo.value });
+            renderTranslators();
+        };
+        langFrom.addEventListener('change', onLangChange);
+        langTo.addEventListener('change', onLangChange);
+    }
+
+    if (langSwap) {
+        langSwap.addEventListener('click', () => {
+            if (!langFrom || !langTo) return;
+            // 'auto' can't be a target. If source is auto, swap is a no-op.
+            if (langFrom.value === 'auto') {
+                toast('Bahasa sumber sedang Deteksi otomatis — pilih bahasa spesifik dulu untuk swap.', 'info');
+                return;
+            }
+            const a = langFrom.value;
+            const b = langTo.value;
+            langFrom.value = b;
+            langTo.value   = a;
+            saveTranslatePrefs({ from: langFrom.value, to: langTo.value });
+            renderTranslators();
+        });
+    }
+
+    if (translatorOpenAll) {
+        translatorOpenAll.addEventListener('click', () => {
+            const langs = getCurrentLangPair();
+            let opened = 0;
+            let blocked = false;
+            TRANSLATORS.forEach((t, i) => {
+                setTimeout(() => {
+                    const w = window.open(t.buildUrl(langs), '_blank', 'noopener,noreferrer');
+                    if (w) opened += 1;
+                    else blocked = true;
+                    if (i === TRANSLATORS.length - 1) {
+                        if (blocked) toast('Popup blocker aktif — izinkan popup untuk buka semua.', 'error');
+                        else toast(`${opened} translator dibuka di tab baru.`, 'success');
+                    }
+                }, i * 120);
+            });
+        });
+    }
+
+    if (tabDownload) tabDownload.addEventListener('click', () => switchTab('download'));
+    if (tabTranslate) tabTranslate.addEventListener('click', () => switchTab('translate'));
+
+    // Initial render of translator list
+    renderTranslators();
+
+    // Expose a way for the download flow to nudge users into translate mode
+    window.__dmazSwitchToTranslate = () => switchTab('translate');
 
     // ---------- nice-to-have: keyboard shortcut '/' to focus input ----------
     document.addEventListener('keydown', (e) => {

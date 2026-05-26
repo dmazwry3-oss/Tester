@@ -11,11 +11,15 @@ ulang.
 
 ## Highlights
 
-- **6 mirror downloader** dalam satu klik (VPDFS, DLScrib, DocDownloader,
-  Scrdownloader, VDownloaders, ilide.info)
+- **Tab Scribd Download**: 6 mirror downloader (VPDFS, DLScrib, DocDownloader,
+  Scrdownloader, VDownloaders, ilide.info) dalam satu klik
+- **Tab PDF Translate**: 6 layanan translator dokumen (Google Translate,
+  OnlineDocTranslator, DeepL, DocTranslator, PDF24, iLovePDF) dengan
+  pemilihan bahasa sumber & tujuan, +80 bahasa
 - **Subdomain locale** (`id.scribd.com`, `de.scribd.com`, dst.) otomatis
   dinormalisasi
-- **Paste dari clipboard**, **copy link per mirror**, **Open all in tabs**
+- **Paste dari clipboard**, **copy link per mirror/translator**,
+  **Open all in tabs**
 - **Riwayat 5 dokumen terakhir** (localStorage, tidak dikirim ke server)
 - **Toast notifications**, animasi halus, mendukung `prefers-reduced-motion`
 - Backend serverless via **Netlify Functions** (Node 18+)

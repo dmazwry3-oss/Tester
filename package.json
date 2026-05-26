@@ -1,6 +1,6 @@
 {
   "name": "dmaz-tester",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Dmaz Tester - Multi-mirror Scribd downloader. Bypasses Cloudflare/captcha gating by offering several downloader services per request.",
   "scripts": {
