@@ -11,7 +11,9 @@
 
 'use strict';
 
-const SCRIBD_HOST_RE = /^(www\.)?scribd\.com$/i;
+// Accepts scribd.com, www.scribd.com, and country-code subdomains
+// like id.scribd.com, es.scribd.com, pt.scribd.com, fr.scribd.com, etc.
+const SCRIBD_HOST_RE = /^(?:[a-z0-9-]+\.)?scribd\.com$/i;
 const SCRIBD_PATH_RE = /^\/(document|doc|presentation)\/(\d+)(?:\/([^/?#]+))?/i;
 
 function jsonResponse(statusCode, body) {
