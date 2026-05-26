@@ -31,8 +31,8 @@
             <div class="container">
                 <h1>Scribd Downloader <span class="accent">Free</span></h1>
                 <p class="lead">
-                    Download dokumen Scribd dengan cepat dan tanpa ribet. Cukup paste URL,
-                    klik tombol, dan dapatkan link download dalam hitungan detik.
+                    Paste URL Scribd, dan kami akan menyiapkan beberapa mirror sekaligus.
+                    Kalau salah satu kena Cloudflare atau captcha, tinggal coba mirror lain — tanpa input ulang.
                 </p>
 
                 <form id="downloader-form" class="form" novalidate>
@@ -69,12 +69,12 @@
                     <div class="card">
                         <div class="card-num">2</div>
                         <h3>Process</h3>
-                        <p>Sistem akan memvalidasi URL dan menyiapkan link unduh untuk dokumen.</p>
+                        <p>Sistem memvalidasi URL dan menyiapkan link dari beberapa mirror downloader sekaligus.</p>
                     </div>
                     <div class="card">
                         <div class="card-num">3</div>
-                        <h3>Download</h3>
-                        <p>Klik tombol download untuk membuka viewer dan menyimpan dokumen.</p>
+                        <h3>Pilih Mirror</h3>
+                        <p>Klik mirror yang Recommended dulu. Kalau kena verifikasi atau captcha, lompat ke mirror berikutnya tanpa paste ulang.</p>
                     </div>
                 </div>
 
@@ -94,6 +94,14 @@
                     <p>Ya, semua fitur tersedia gratis. Anda bisa menggunakan tanpa registrasi.</p>
                 </details>
                 <details class="faq-item">
+                    <summary>Kenapa ada banyak tombol mirror?</summary>
+                    <p>Setiap mirror adalah layanan downloader pihak ketiga yang berbeda (VPDFS, DLScrib, DocDownloader, dll). Kalau salah satu sedang minta verifikasi Cloudflare atau captcha, mirror lain biasanya masih bisa dipakai tanpa hambatan. Kami menyiapkan semuanya sekaligus jadi Anda nggak perlu paste URL berkali-kali.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Mirror mana yang paling bagus?</summary>
+                    <p>Coba yang berlabel <strong>Recommended</strong> dulu (paling atas). Kalau kena captcha berat, lanjut ke yang berikutnya. Tidak ada satu mirror yang selalu menang — kondisinya berubah hari ke hari tergantung load &amp; proteksi anti-bot masing-masing layanan.</p>
+                </details>
+                <details class="faq-item">
                     <summary>Format file apa yang didukung?</summary>
                     <p>Sebagian besar dokumen Scribd dapat diunduh dalam format PDF. Beberapa dokumen mungkin tersedia dalam format aslinya seperti DOC, PPT, atau TXT.</p>
                 </details>
@@ -103,7 +111,7 @@
                 </details>
                 <details class="faq-item">
                     <summary>Apakah ada batasan jumlah download?</summary>
-                    <p>Tidak ada batasan keras, namun mohon gunakan dengan bijak. Jika Anda mengalami throttling, coba lagi beberapa menit kemudian.</p>
+                    <p>Tidak ada batasan keras dari sisi kami. Tapi setiap mirror punya rate-limit-nya sendiri — kalau mentok di satu mirror, pindah ke mirror lain.</p>
                 </details>
             </div>
         </section>

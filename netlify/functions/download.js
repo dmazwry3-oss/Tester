@@ -1,12 +1,12 @@
 /**
  * Netlify Function: /download
  *
- * Validates a Scribd URL submitted by the client and returns a downloader/viewer
- * URL that resolves the document. We use the ilide.info viewer pattern that the
- * popular scribd.vdownloaders.com service relies on as its backend.
+ * Validates a Scribd URL submitted by the client and returns multiple mirror
+ * URLs from different downloader services. The frontend renders all mirrors
+ * so users can pick whichever one is captcha/Cloudflare-friendly that day.
  *
  * Request:  POST { "url": "https://www.scribd.com/document/123/Title" }
- * Response: { success, title, message, downloadUrl, sourceUrl }
+ * Response: { success, title, message, sourceUrl, mirrors[], downloadUrl }
  */
 
 'use strict';
@@ -56,7 +56,8 @@ function parseScribdUrl(raw) {
     const slug = rawSlug ? decodeURIComponent(rawSlug) : '';
 
     // Reconstruct a canonical scribd URL (drops query/hash).
-    const canonical = `https://www.scribd.com/${kind.toLowerCase()}/${docId}${slug ? '/' + encodeURIComponent(slug) : ''}`;
+    const pathSlug = slug ? '/' + encodeURIComponent(slug) : '';
+    const canonical = `https://www.scribd.com/${kind.toLowerCase()}/${docId}${pathSlug}`;
 
     return {
         ok: true,
@@ -67,12 +68,64 @@ function parseScribdUrl(raw) {
     };
 }
 
-function buildDownloadUrl(parsed) {
-    // ilide.info is the viewer/downloader backend used by scribd.vdownloaders.com
-    // and many similar services. The viewer takes the canonical scribd URL as a
-    // query parameter and renders the document with a download option.
-    const target = `${parsed.canonical}#fullscreen&from_embed`;
-    return `https://ilide.info/doc-viewer-v2?url=${encodeURIComponent(target)}`;
+/**
+ * Build the list of mirror URLs.
+ *
+ * Two strategies are used depending on what each service supports:
+ *   1. Domain swap:   replace scribd.com with the mirror's host. The mirror
+ *                     parses its own URL and resolves the document.
+ *   2. ?url= param:   send the canonical scribd URL as a query parameter. If
+ *                     the service auto-detects it, great; if not, the user
+ *                     lands on its homepage and can paste manually.
+ *
+ * Mirrors are ordered from most-likely-to-just-work to most-likely-to-show-
+ * captcha. The first entry is treated as the recommended/default link.
+ */
+function buildMirrors(parsed) {
+    const { kind, docId, slug, canonical } = parsed;
+    const pathSlug = slug ? '/' + encodeURIComponent(slug) : '';
+    const encodedCanonical = encodeURIComponent(canonical);
+    const ilideTarget = encodeURIComponent(`${canonical}#fullscreen&from_embed`);
+
+    return [
+        {
+            id: 'vpdfs',
+            name: 'VPDFS',
+            url: `https://scribd.vpdfs.com/${kind}/${docId}${pathSlug}`,
+            note: 'Direct domain swap. Biasanya paling ringan dari sisi captcha.',
+            recommended: true
+        },
+        {
+            id: 'dlscrib',
+            name: 'DLScrib',
+            url: `https://dlscrib.com/?url=${encodedCanonical}`,
+            note: 'UI modern. Kalau URL tidak auto-detect, paste manual di kotak.'
+        },
+        {
+            id: 'docdownloader',
+            name: 'DocDownloader',
+            url: `https://docdownloader.com/?url=${encodedCanonical}`,
+            note: 'Klasik & stabil. Kadang menampilkan iklan sebelum link muncul.'
+        },
+        {
+            id: 'scrdownloader',
+            name: 'Scrdownloader',
+            url: `https://scrdownloader.com/?url=${encodedCanonical}`,
+            note: 'Simpel & ringan. Cocok untuk dokumen kecil.'
+        },
+        {
+            id: 'vdownloaders',
+            name: 'VDownloaders',
+            url: `https://scribd.vdownloaders.com/${kind}/${docId}${pathSlug}`,
+            note: 'Domain swap menuju ilide.info. Sering minta verifikasi Cloudflare + captcha.'
+        },
+        {
+            id: 'ilide',
+            name: 'ilide.info (raw)',
+            url: `https://ilide.info/doc-viewer-v2?url=${ilideTarget}`,
+            note: 'Backend asli. Last resort kalau yang lain tidak berhasil.'
+        }
+    ];
 }
 
 function buildTitle(parsed) {
@@ -108,16 +161,18 @@ exports.handler = async (event) => {
         return jsonResponse(400, { success: false, error: parsed.error });
     }
 
-    const downloadUrl = buildDownloadUrl(parsed);
+    const mirrors = buildMirrors(parsed);
     const title = buildTitle(parsed);
 
     return jsonResponse(200, {
         success: true,
         title,
-        message: 'Dokumen siap. Klik tombol untuk membuka viewer dan menyimpan file.',
+        message: 'Pilih salah satu mirror di bawah. Kalau yang satu kena Cloudflare atau captcha, tinggal coba yang lain.',
         sourceUrl: parsed.canonical,
-        downloadUrl,
         docId: parsed.docId,
-        kind: parsed.kind
+        kind: parsed.kind,
+        mirrors,
+        // Backward-compat: legacy clients still get a single downloadUrl.
+        downloadUrl: mirrors[0].url
     });
 };
