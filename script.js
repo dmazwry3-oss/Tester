@@ -24,7 +24,16 @@
         }
     }
 
-    function showResult({ status, title, message, downloadUrl, sourceUrl }) {
+    function downloadIcon() {
+        return `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>`;
+    }
+
+    function showResult({ status, title, message, downloads, downloadUrl, sourceUrl }) {
         result.hidden = false;
         result.classList.remove('is-error', 'is-success');
         if (status === 'error') result.classList.add('is-error');
@@ -34,18 +43,31 @@
         if (title) html += `<h3>${escapeHtml(title)}</h3>`;
         if (message) html += `<p>${escapeHtml(message)}</p>`;
         if (sourceUrl) html += `<div class="url-preview">${escapeHtml(sourceUrl)}</div>`;
-        if (downloadUrl) {
-            html += `
-                <a href="${escapeAttr(downloadUrl)}" target="_blank" rel="noopener noreferrer" class="download-btn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Open Download Page
-                </a>
-            `;
+
+        const list = Array.isArray(downloads) && downloads.length
+            ? downloads
+            : (downloadUrl ? [{ id: 'primary', label: 'Open Download Page', url: downloadUrl }] : []);
+
+        if (list.length) {
+            html += '<div class="download-list">';
+            list.forEach((opt, idx) => {
+                const isPrimary = idx === 0;
+                html += `
+                    <a href="${escapeAttr(opt.url)}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="download-btn ${isPrimary ? 'is-primary' : 'is-secondary'}">
+                        ${downloadIcon()}
+                        <span class="download-btn-label">
+                            <strong>${escapeHtml(opt.label || ('Mirror ' + (idx + 1)))}</strong>
+                            ${opt.description ? `<small>${escapeHtml(opt.description)}</small>` : ''}
+                        </span>
+                    </a>`;
+            });
+            html += '</div>';
+            html += '<p class="download-note">Tip: jika satu mirror gagal atau bilang "not found", coba mirror lain. Mirror tersebut adalah layanan pihak ketiga.</p>';
         }
+
         result.innerHTML = html;
         result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
@@ -108,7 +130,8 @@
             showResult({
                 status: 'success',
                 title: data.title || 'Siap untuk diunduh!',
-                message: data.message || 'Klik tombol di bawah untuk membuka halaman download.',
+                message: data.message || 'Klik salah satu tombol di bawah untuk membuka halaman download.',
+                downloads: data.downloads,
                 downloadUrl: data.downloadUrl,
                 sourceUrl: data.sourceUrl || value
             });

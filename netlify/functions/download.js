@@ -69,12 +69,46 @@ function parseScribdUrl(raw) {
     };
 }
 
-function buildDownloadUrl(parsed) {
-    // ilide.info is the viewer/downloader backend used by scribd.vdownloaders.com
-    // and many similar services. The viewer takes the canonical scribd URL as a
-    // query parameter and renders the document with a download option.
-    const target = `${parsed.canonical}#fullscreen&from_embed`;
-    return `https://ilide.info/doc-viewer-v2?url=${encodeURIComponent(target)}`;
+/**
+ * Build a list of mirror/downloader URLs that may serve the document.
+ *
+ * No single public Scribd downloader works for every document, so we return
+ * the primary one (which most reliably works for fresh URLs) plus a few
+ * alternatives. The frontend renders all of them so the user can try the
+ * next one if the first one fails.
+ */
+function buildDownloadUrls(parsed) {
+    const { kind, docId, slug } = parsed;
+    const slugPart = slug ? `/${encodeURIComponent(slug)}` : '';
+    const path = `/${kind}/${docId}${slugPart}`;
+    const canonical = parsed.canonical;
+
+    return [
+        {
+            id: 'vdownloaders',
+            label: 'VDownloaders',
+            description: 'Pola substitusi domain (www.scribd.com → scribd.vdownloaders.com).',
+            url: `https://scribd.vdownloaders.com${path}`
+        },
+        {
+            id: 'scrdownloader',
+            label: 'ScrDownloader',
+            description: 'Mirror lain dengan pola substitusi domain.',
+            url: `https://scrdownloader.com${path}`
+        },
+        {
+            id: 'dlscrib',
+            label: 'DLScrib',
+            description: 'Buka halaman DLScrib dengan URL Scribd Anda.',
+            url: `https://dlscrib.com/queue?url=${encodeURIComponent(canonical)}`
+        },
+        {
+            id: 'ilide',
+            label: 'iLIDE Viewer',
+            description: 'Viewer iLIDE — bekerja kalau dokumen sudah terindeks di sana.',
+            url: `https://ilide.info/doc-viewer-v2?url=${encodeURIComponent(canonical + '#fullscreen&from_embed')}`
+        }
+    ];
 }
 
 function buildTitle(parsed) {
@@ -110,15 +144,16 @@ exports.handler = async (event) => {
         return jsonResponse(400, { success: false, error: parsed.error });
     }
 
-    const downloadUrl = buildDownloadUrl(parsed);
+    const downloads = buildDownloadUrls(parsed);
     const title = buildTitle(parsed);
 
     return jsonResponse(200, {
         success: true,
         title,
-        message: 'Dokumen siap. Klik tombol untuk membuka viewer dan menyimpan file.',
+        message: 'Dokumen siap. Coba salah satu link di bawah — jika satu gagal, coba alternatif berikutnya.',
         sourceUrl: parsed.canonical,
-        downloadUrl,
+        downloadUrl: downloads[0].url, // backwards-compat (primary)
+        downloads,
         docId: parsed.docId,
         kind: parsed.kind
     });
